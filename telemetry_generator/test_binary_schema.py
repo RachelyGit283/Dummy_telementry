@@ -16,7 +16,7 @@ if current_dir not in sys.path:
 
 try:
     # Import from local telemetry_generator module
-    from generator import EnhancedTelemetryGeneratorPro, BinarySchemaProcessor
+    from telemetry_generator import EnhancedTelemetryGeneratorPro, BinarySchemaProcessor
     print("✓ Successfully imported from local generator module")
 except ImportError as e:
     print(f"✗ Import error: {e}")

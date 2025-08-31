@@ -1,54 +1,54 @@
-# מערכת טלמטריה מתקדמת - מדריך הפעלה
+# Advanced Telemetry System - User Guide
 
-מחולל נתוני טלמטריה בעל ביצועים גבוהים עם תמיכה בסכמה בינארית ומנגנון Fault Injection.
+High-performance telemetry data generator with binary schema support and fault injection capabilities.
 
-## התקנה מהירה
+## Quick Installation
 
 ```bash
-# התקנת החבילה
+# Install the package
 pip install -e .
 
-# בדיקה שהמערכת עובדת
+# Verify system works
 telegen --help
 ```
 
-## תרחישי עומס - Load Profiles
+## Load Testing Scenarios - Load Profiles
 
-### פרופילים מוכנים
+### Available Profiles
 
-הצגת כל הפרופילים הזמינים:
+Display all available profiles:
 ```bash
 telegen profiles
 ```
 
-#### פרופילי עומס בסיסיים:
-- **low**: 100 rec/s, מתאים לפיתוח
-- **medium**: 1,000 rec/s, מתאים לבדיקות אינטגרציה
-- **high**: 10,000 rec/s, בדיקות ביצועים
-- **stress**: 50,000 rec/s, בדיקות עומס מקסימליות
+#### Basic Load Profiles:
+- **low**: 100 rec/s, suitable for development
+- **medium**: 1,000 rec/s, suitable for integration testing
+- **high**: 10,000 rec/s, performance testing
+- **stress**: 50,000 rec/s, maximum load testing
 
-#### פרופילים מתקדמים:
-- **burst**: עומס מתפרץ (100→5,000 rec/s במחזורים)
-- **realistic**: דפוס משתנה הדומה למציאות
-- **endurance**: בדיקת יציבות לטווח ארוך (24 שעות)
+#### Advanced Profiles:
+- **burst**: Burst load patterns (100→5,000 rec/s in cycles)
+- **realistic**: Variable patterns mimicking real-world usage
+- **endurance**: Long-term stability testing (24 hours)
 
-### הרצת תרחישי עומס
+### Running Load Scenarios
 
 ```bash
-# עומס בסיסי לפיתוח
+# Basic development load
 telegen generate --schema gpu_schema.json --load-profile low --duration 60
 
-# עומס בינוני לבדיקות
+# Medium load for testing
 telegen generate --schema gpu_schema.json --load-profile medium --duration 300
 
-# עומס גבוה עם GPU
+# High load with GPU acceleration
 telegen generate --schema gpu_schema.json --load-profile high --gpu --duration 600
 
-# בדיקת עומס קיצונית
+# Extreme stress testing
 telegen generate --schema gpu_schema.json --load-profile stress --workers 8 --duration 1800
 ```
 
-### הגדרה מותאמת אישית
+### Custom Configuration
 
 ```bash
 telegen generate \
@@ -60,83 +60,83 @@ telegen generate \
   --rotate-size 1GB
 ```
 
-## וולידציה והתאמה לסכמה
+## Schema Validation and Compliance
 
-### בדיקה בסיסית
+### Basic Validation
 
 ```bash
-# וולידציה מהירה של הסכמה
+# Quick schema validation
 telegen validate --schema gpu_schema.json
 
-# בדיקה עם דוגמאות רשומות
+# Validation with sample records
 telegen validate --schema gpu_schema.json --records 1000 --show-sample
 
-# בדיקת עקביות גדלים
+# Size consistency check
 telegen validate --schema gpu_schema.json --records 5000 --check-size
 ```
 
-### מידע מפורט על הסכמה
+### Detailed Schema Information
 
 ```bash
-# הצגת פרטי הסכמה
+# Display schema details
 telegen info gpu_schema.json
 
-# פלט לדוגמה:
+# Expected output:
 # Schema: gpu_telemetry_flat_v1
 # Record size: 48 bytes
 # Fields: 14
 # Bit utilization: 352/384 (91.7%)
 ```
 
-### בדיקת איכות הנתונים
+### Data Quality Verification
 
 ```bash
-# יצירה עם סטטיסטיקות מפורטות
+# Generate with detailed statistics
 telegen generate \
   --schema gpu_schema.json \
   --rate 1000 \
   --duration 10 \
   --verbose
 
-# בדיקת פורמטים שונים
+# Test different output formats
 telegen generate --schema gpu_schema.json --format json --records 100
 telegen generate --schema gpu_schema.json --format binary --records 100
 telegen generate --schema gpu_schema.json --format influx --records 100
 ```
 
-## מנגנון Fault Injection
+## Fault Injection Mechanism
 
-### פרופילי שגיאות
+### Fault Profiles
 
 ```bash
-# שגיאות קלות לפיתוח (2% שגיאות)
+# Light faults for development (2% fault rate)
 telegen generate --schema gpu_schema.json --fault-profile development --duration 60
 
-# שגיאות מגוונות לבדיקות (5% שגיאות)
+# Diverse faults for testing (5% fault rate)
 telegen generate --schema gpu_schema.json --fault-profile testing --duration 300
 
-# שגיאות רבות לבדיקות עומס (15% שגיאות)
+# Heavy faults for stress testing (15% fault rate)
 telegen generate --schema gpu_schema.json --fault-profile stress --duration 600
 ```
 
-### שגיאות מותאמות אישית
+### Custom Fault Configuration
 
 ```bash
-# שיעור שגיאות ספציפי
+# Specific fault rate
 telegen generate \
   --schema gpu_schema.json \
   --enable-faults \
   --fault-rate 0.08 \
   --duration 300
 
-# סוגי שגיאות ספציפיים
+# Specific fault types
 telegen generate \
   --schema gpu_schema.json \
   --enable-faults \
   --fault-types out_of_range,wrong_type,missing_field \
   --fault-rate 0.05
 
-# שמירת דוח שגיאות
+# Save fault report
 telegen generate \
   --schema gpu_schema.json \
   --fault-profile testing \
@@ -144,26 +144,26 @@ telegen generate \
   --duration 600
 ```
 
-### יצירת הגדרות שגיאות
+### Creating Fault Configurations
 
 ```bash
-# רשימת סוגי השגיאות הזמינים
+# List available fault types
 telegen list-fault-types
 
-# יצירת קובץ הגדרות
+# Create configuration file
 telegen create-fault-config my_faults.json --profile testing
 
-# הגדרות מותאמות אישית
+# Custom configuration
 telegen create-fault-config custom_faults.json \
   --fault-rate 0.1 \
   --include-types out_of_range,enum_invalid \
   --profile custom
 ```
 
-### בדיקת מנגנון השגיאות
+### Testing Fault Injection
 
 ```bash
-# בדיקה עם fault injection
+# Validate with fault injection
 telegen validate \
   --schema gpu_schema.json \
   --test-faults \
@@ -171,30 +171,30 @@ telegen validate \
   --records 1000
 ```
 
-## פורמטי פלט
+## Output Formats
 
 ```bash
-# פורמט בינארי (ברירת מחדל - הכי מהיר וחסכוני)
+# Binary format (default - fastest and most compact)
 telegen generate --schema gpu_schema.json --format binary
 
 # JSON array
 telegen generate --schema gpu_schema.json --format json
 
-# NDJSON (שורה לכל רשומה)
+# NDJSON (one record per line)
 telegen generate --schema gpu_schema.json --format ndjson
 
 # InfluxDB Line Protocol
 telegen generate --schema gpu_schema.json --format influx --measurement-name gpu_metrics
 
-# דחיסה
+# Compression
 telegen generate --schema gpu_schema.json --compress
 ```
 
-## בדיקת ביצועים
+## Performance Testing
 
-### בנצ'מרק בסיסי
+### Basic Benchmark
 ```bash
-# השוואת מהירות יצירה
+# Compare generation speeds
 python -c "
 from telemetry_system import create_generator
 gen = create_generator(schema_file='gpu_schema.json')
@@ -203,78 +203,78 @@ print(f'Rate: {results[\"regular_records_per_sec\"]:.0f} records/sec')
 "
 ```
 
-### מדידת תפוקה
+### Throughput Measurement
 ```bash
-# בדיקת תפוקה עם פרופילים שונים
+# Test throughput with different profiles
 telegen generate --schema gpu_schema.json --load-profile low --duration 30 --verbose
 telegen generate --schema gpu_schema.json --load-profile medium --duration 30 --verbose
 telegen generate --schema gpu_schema.json --load-profile high --duration 30 --verbose
 ```
 
-## פתרון בעיות נפוצות
+## Common Troubleshooting
 
-### בדיקת תקינות הסכמה
+### Schema Validation
 ```bash
-# וודא שהסכמה תקינה
+# Ensure schema is valid
 telegen info gpu_schema.json
 
-# צפוי לראות:
+# Expected output:
 # Format: binary
 # Total bits: 384
 # Record size: 48 bytes
 # Bit utilization: >90%
 ```
 
-### בדיקת נתונים שנוצרו
+### Data Verification
 ```bash
-# בדוק קבצים שנוצרו
+# Check generated files
 ls -la data/
 
-# בדוק גודל קובץ (צריך להיות records × 48 bytes + overhead קטן)
+# Check file size (should be records × 48 bytes + small overhead)
 du -h data/telemetry_*.bin
 ```
 
-### בעיות ביצועים
+### Performance Issues
 ```bash
-# השתמש ב-GPU אם זמין
+# Use GPU if available
 telegen generate --schema gpu_schema.json --gpu --rate 10000
 
-# הגדל batch size לביצועים טובים יותר
+# Increase batch size for better performance
 telegen generate --schema gpu_schema.json --batch-size 1000
 
-# הגדל מספר workers
+# Increase worker threads
 telegen generate --schema gpu_schema.json --workers 8
 ```
 
-### בעיות זיכרון
+### Memory Issues
 ```bash
-# הקטן את גודל rotation
+# Reduce rotation size
 telegen generate --schema gpu_schema.json --rotate-size 128MB
 
-# השתמש בדחיסה
+# Use compression
 telegen generate --schema gpu_schema.json --compress
 
-# הקטן batch size
+# Reduce batch size
 telegen generate --schema gpu_schema.json --batch-size 50
 ```
 
-## דוגמאות מהירות
+## Quick Examples
 
-### בדיקה יומית
+### Daily Testing
 ```bash
-# 10 דקות של נתונים בקצב בינוני
+# 10 minutes of medium-rate data
 telegen generate --schema gpu_schema.json --load-profile medium --duration 600
 ```
 
-### בדיקת לילה
+### Overnight Testing
 ```bash
-# עומס יציבות למשך שעה
+# Stability test for one hour
 telegen generate --schema gpu_schema.json --load-profile realistic --duration 3600
 ```
 
-### בדיקת עומס קיצונית
+### Extreme Load Testing
 ```bash
-# בדיקת גבולות המערכת
+# Push system limits
 telegen generate \
   --schema gpu_schema.json \
   --rate 100000 \
@@ -285,9 +285,9 @@ telegen generate \
   --compress
 ```
 
-## קבצי תצורה
+## Configuration Files
 
-הדוגמה הבאה מציגה קובץ `types.json` אופציונלי:
+Example optional `types.json` file:
 
 ```json
 {
@@ -302,4 +302,4 @@ telegen generate \
 }
 ```
 
-המערכת תחפש אוטומטית קובץ `types.json` באותה תיקייה של הסכמה.
+The system will automatically search for a `types.json` file in the same directory as the schema file.
