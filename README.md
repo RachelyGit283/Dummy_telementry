@@ -382,3 +382,37 @@ Contributions are welcome! Please read CONTRIBUTING.md for guidelines.
 For issues and questions:
 - GitHub Issues: https://github.com/yourusername/telemetry-generator/issues
 - Documentation: https://telemetry-generator.readthedocs.io
+
+## how to get more fake telemetry
+מעולה. הבעיה היא שה־global_fault_rate שלך מוגדר ל־0.20 (20%), אבל סיכוי ההחלה של כל fault type בתוך FaultInjector הוא נמוך מאוד (למשל 0.01–0.05 ברירת מחדל). לכן בפועל, גם אם רשומה נבחרה להכניס שגיאה, רוב הסיכויים שה־fault type שבחרו לא "קופץ", ולכן רשומות פגומות נמוכות מאוד.
+
+כדי להגיע קרוב ל־20% בפועל אפשר:
+
+להגדיל את ההסתברות בכל FaultConfig – לדוגמה, במקום probability=0.02, לשים 0.2–0.5 בהתאם לרצוי.
+
+להקטין את מספר ה־fault types – כל שגיאה תתרחש בתדירות גבוהה יותר.
+
+לאפשר יותר שדות להיפגע בכל רשומה – כרגע max_fields=1 כברירת מחדל, אפשר להגדיל ל־2–3.
+
+להגדיר force_fault_count או retry – בכמה מערכות מגדירים שהמכונה תנסה להכניס fault עד שמגיעים למספר רשומות פגומות מסוים.
+
+לדוגמה, שינוי פשוט ב־_create_default_configs שלך:
+
+FaultConfig(
+    fault_type=FaultType.OUT_OF_RANGE,
+    probability=0.25,  # במקום 0.02
+    ...
+)
+FaultConfig(
+    fault_type=FaultType.WRONG_TYPE,
+    probability=0.25,  # במקום 0.015
+    ...
+)
+
+
+וכן להגדיל ב־parameters:
+
+parameters={"max_fields": 2}
+
+
+כך כל רשומה שנבחרה להיכנס ל־fault יכולה לקבל יותר משגיאה אחת, וזה מעלה את אחוז הרשומות הפגומות קרוב יותר ל־20%.
