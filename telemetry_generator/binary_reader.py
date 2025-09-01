@@ -288,24 +288,46 @@ class BinaryRecordReader:
         """Convert binary file to JSON format"""
         records_converted = 0
         
+        # with open(json_file, 'w') as f:
+        #     if format_type == "json":
+        #         f.write("[\n")
+            
+        #     for i, record in enumerate(self.read_file(binary_file)):
+        #         if format_type == "ndjson":
+        #             json.dump(record, f, separators=(',', ':'))
+        #             f.write('\n')
+        #         elif format_type == "json":
+        #             if i > 0:
+        #                 f.write(',\n')
+        #             json.dump(record, f, indent=2)
+                
+        #         records_converted += 1
+            
+        #     if format_type == "json":
+        #         f.write("\n]")
+        
+        # print(f"Converted {records_converted:,} records from {binary_file} to {json_file}")
         with open(json_file, 'w') as f:
             if format_type == "json":
                 f.write("[\n")
             
             for i, record in enumerate(self.read_file(binary_file)):
+                # המר את כל המפתחות למחרוזות
+                record_str_keys = {str(k): v for k, v in record.items()}
+
                 if format_type == "ndjson":
-                    json.dump(record, f, separators=(',', ':'))
+                    json.dump(record_str_keys, f, indent=2)
                     f.write('\n')
                 elif format_type == "json":
                     if i > 0:
                         f.write(',\n')
-                    json.dump(record, f, indent=2)
+                    json.dump(record_str_keys, f, indent=2)
                 
                 records_converted += 1
             
             if format_type == "json":
                 f.write("\n]")
-        
+
         print(f"Converted {records_converted:,} records from {binary_file} to {json_file}")
 
 def main():

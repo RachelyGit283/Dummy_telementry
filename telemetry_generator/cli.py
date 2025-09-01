@@ -1397,7 +1397,7 @@ def generate(schema, types, rate, duration, out_dir, rotate_size, format, seed,
             }
             
             with open(save_fault_report, 'w', encoding='utf-8') as f:
-                json.dump(fault_report, f, indent=2, ensure_ascii=False)
+                json.dump({str(k): str(v) for k, v in fault_report.items()}, f, indent=2, ensure_ascii=False)
             
             click.echo(f"Fault report saved: {save_fault_report}")
             logger.info(f"Detailed fault report written to {save_fault_report}")

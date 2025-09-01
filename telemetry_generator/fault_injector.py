@@ -395,9 +395,16 @@ class FaultInjector:
         new_value = original_value * multiplier
 
         # סיכוי לערך שלילי
-        if params.get("negative_chance", 0) > random.random():
-            new_value = -abs(new_value)
+        # if params.get("negative_chance", 0) > random.random():
+        #     new_value = -abs(new_value)
 
+        try:
+            neg_chance = float(params.get("negative_chance", 0))
+        except (ValueError, TypeError):
+            neg_chance = 0.0
+
+        if isinstance(new_value, (int, float)) and neg_chance > random.random():
+            new_value = -abs(new_value)
         # ווידוא שהערך באמת מחוץ לטווח
         if field_info and field_info.get("bits"):
             max_val = (1 << field_info["bits"]) - 1

@@ -2,7 +2,7 @@
 binary_packer.py
 אורז רשומות בפורמט בינארי עם תמיכה ב-CRC וביטים קבועים
 """
-
+import logging
 import math
 import struct
 import zlib
@@ -107,21 +107,50 @@ class BinaryRecordPacker:
                     value = struct.unpack('Q', struct.pack('d', value))[0]
             
             # המרה לint והגבלה לטווח
+            # if "int" in field_type.lower():
+            #     if "uint" in field_type.lower():
+            #         # Unsigned integer
+            #         try:
+            #             int_value = int(abs(value)) & ((1 << bits) - 1)
+            #         except (ValueError, TypeError):
+            #             logging.warning(f"Skipping unsigned int conversion for non-numeric value: {value}")
+            #             int_value = 0
+            #     else:
+            #         # Signed integer
+            #         int_value = int(value)
+            #         # Handle two's complement for negative numbers
+            #         if int_value < 0:
+            #             int_value = int_value & ((1 << bits) - 1)
+            #         else:
+            #             int_value = int_value & ((1 << bits) - 1)
+            # else:
+            #     int_value = int(value) & ((1 << bits) - 1)
             if "int" in field_type.lower():
                 if "uint" in field_type.lower():
                     # Unsigned integer
-                    int_value = int(abs(value)) & ((1 << bits) - 1)
+                    try:
+                        int_value = int(abs(value)) & ((1 << bits) - 1)
+                    except (ValueError, TypeError):
+                        logging.warning(f"Skipping unsigned int conversion for non-numeric value: {value}")
+                        int_value = 0
                 else:
                     # Signed integer
-                    int_value = int(value)
-                    # Handle two's complement for negative numbers
-                    if int_value < 0:
-                        int_value = int_value & ((1 << bits) - 1)
-                    else:
-                        int_value = int_value & ((1 << bits) - 1)
+                    try:
+                        int_value = int(value)
+                        # Handle two's complement for negative numbers
+                        if int_value < 0:
+                            int_value = int_value & ((1 << bits) - 1)
+                        else:
+                            int_value = int_value & ((1 << bits) - 1)
+                    except (ValueError, TypeError):
+                        logging.warning(f"Skipping signed int conversion for non-numeric value: {value}")
+                        int_value = 0
             else:
-                int_value = int(value) & ((1 << bits) - 1)
-            
+                try:
+                    int_value = int(value) & ((1 << bits) - 1)
+                except (ValueError, TypeError):
+                    logging.warning(f"Skipping numeric conversion for non-numeric value: {value}")
+                    int_value = 0
             # כתיבה bit by bit או byte by byte
             if start_bit % 8 == 0 and bits % 8 == 0:
                 # Byte-aligned - optimized path
