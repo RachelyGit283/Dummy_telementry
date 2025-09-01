@@ -208,59 +208,7 @@ class RollingFileWriter:
         self.records_in_current_file += 1
         self.total_records_written += 1
 
-    # def _serialize_record(self, record: Any, generator: Any = None) -> Union[str, bytes]:
-    #     """Serialize record based on format"""
-        
-    #     if self.format == 'ndjson':
-    #         # Newline-delimited JSON
-    #         data = {
-    #             'type': record.record_type.value,
-    #             'timestamp': record.timestamp,
-    #             'seq_id': record.sequence_id,
-    #             'data': record.data
-    #         }
-    #         return json.dumps(data, separators=(',', ':')) + '\n'
-        
-    #     elif self.format == 'json':
-    #         # Regular JSON (for array)
-    #         data = {
-    #             'type': record.record_type.value,
-    #             'timestamp': record.timestamp,
-    #             'seq_id': record.sequence_id,
-    #             'data': record.data
-    #         }
-    #         return json.dumps(data, separators=(',', ':'), indent=2)
-        
-    #     elif self.format == 'binary':
-            
-    #         # Binary format using generator's packer
-    #         if generator and hasattr(generator, 'pack_record_enhanced'):
-    #             return generator.pack_record_enhanced(record)
-    #         else:
-    #             # Fallback binary serialization
-    #             return self._simple_binary_serialize(record)
-        
-    #     elif self.format == 'influx':
-    #         # InfluxDB Line Protocol
-    #         if generator and hasattr(generator, 'format_influx_line'):
-    #             return generator.format_influx_line(record)
-    #         else:
-    #             # Fallback InfluxDB format
-    #             return self._simple_influx_format(record)
-        
-    #     elif self.format == 'leb128':
-    #         # LEB128 variable-length encoding
-    #         return self._serialize_leb128(record)
-        
-    #     else:
-    #         # Default to NDJSON
-    #         data = {
-    #             'type': record.record_type.value,
-    #             'timestamp': record.timestamp,
-    #             'seq_id': record.sequence_id,
-    #             'data': record.data
-    #         }
-    #         return json.dumps(data) + '\n'
+    
     def _serialize_record(self, record: Any, generator: Any = None) -> Union[str, bytes]:
         """Serialize record based on format"""
         
